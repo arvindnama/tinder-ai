@@ -3,21 +3,17 @@ package io.anama.tinder_ai_backend.conversations;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import io.anama.tinder_ai_backend.profiles.Profile;
 import io.anama.tinder_ai_backend.profiles.ProfileRepository;
-import jakarta.websocket.server.PathParam;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class ConversationController {
@@ -72,6 +68,16 @@ public class ConversationController {
         conversationRepository.save(conversation);
         return conversation;
 
+    }
+
+    @GetMapping("/conversations/{conversationId}")
+    public Conversation getConversation(@PathVariable String conversationId) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Unable to find a conversation " + conversationId));
+
+        return conversation;
     }
 
 }
