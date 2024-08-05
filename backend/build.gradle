@@ -29,7 +29,7 @@ dependencies {
 	implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'
 	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
