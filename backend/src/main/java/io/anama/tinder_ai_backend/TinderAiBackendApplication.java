@@ -3,6 +3,7 @@ package io.anama.tinder_ai_backend;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.anama.tinder_ai_backend.profiles.ProfileCreationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +20,9 @@ import io.anama.tinder_ai_backend.profiles.ProfileRepository;
 public class TinderAiBackendApplication implements CommandLineRunner {
 
     @Autowired
+    private ProfileCreationService profileCreationService;
+
+    @Autowired
     private ProfileRepository profileRepository;
 
     @Autowired
@@ -29,48 +33,7 @@ public class TinderAiBackendApplication implements CommandLineRunner {
     }
 
     public void run(String... args) {
-        System.out.println("Command Line Runner");
-
-        profileRepository.deleteAll();
-        conversationRepository.deleteAll();
-
-        Profile profile = new Profile(
-                "1",
-                "Arvind",
-                "Nama",
-                "Software Engineer",
-                "foo.jpeg",
-                "Indian",
-                "INTP",
-                Gender.MALE,
-                38);
-
-        Profile profile2 = new Profile(
-                "2",
-                "foo",
-                "bar",
-                "Software Engineer",
-                "foo.jpeg",
-                "Indian",
-                "INTP",
-                Gender.MALE,
-                38);
-
-        profileRepository.save(profile);
-        profileRepository.save(profile2);
-        profileRepository.findAll().forEach(System.out::println);
-
-        Conversation conversation = new Conversation(
-                "1",
-                profile.id(),
-                List.of(
-                        new ChatMessage(
-                                "Hello",
-                                profile.id(),
-                                LocalDateTime.now())));
-
-        conversationRepository.save(conversation);
-        conversationRepository.findAll().forEach(System.out::println);
+        profileCreationService.saveProfilesToDB();
     }
 
 }
