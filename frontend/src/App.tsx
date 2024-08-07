@@ -143,7 +143,9 @@ const ChatView = ({
                         className= {classNames(
                             "mb-4 p-4",
                             "rounded",
-                            chat.authorId === "user" ? "bg-blue-100 text-right": "bg-gray-100 text-left"
+                            chat.authorId === "user"
+                                ? "bg-blue-500 text-white ml-4"
+                                : "bg-gray-100 text-gray-800 mr-2"
                         )}
                     >
                         {chat.messageText}
