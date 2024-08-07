@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css'
 import { User, MessageCircle, X, Heart} from 'lucide-react'
 
@@ -68,17 +69,32 @@ const ProfileSelector = () => {
     )
 }
 
+enum Screen {
+    ProfileSelector,
+    MatchesList,
+}
 function App() {
 
+  const [currentScreen, setCurrentScreen] = useState(Screen.ProfileSelector);
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+        case Screen.ProfileSelector:
+            return <ProfileSelector/>
+        case Screen.MatchesList:
+            return <MatchesList/>
+    }
+  }
   return (
     <>
-        <div className="max-w-md mx-auto">
-        <nav className='flex justify-between'>
-            <User/>
-            <MessageCircle/>
+        <div className="max-w-md mx-auto p-4">
+        <nav className="flex justify-between mb-4">
+            <User onClick={() => setCurrentScreen(Screen.ProfileSelector)}/>
+            <MessageCircle onClick={() => setCurrentScreen(Screen.MatchesList)}/>
         </nav>
-        <ProfileSelector/>
-        <MatchesList/>
+        {
+            renderScreen()
+        }
         </div>
     </>
   )
