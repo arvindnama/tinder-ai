@@ -26,20 +26,25 @@ This Project has both backend & frontend.
 $ ollama run llama3
 ```
 
-### Backend Server
+### Spring boot Micro-service
 
 ```sh
 $ cd {code-director}/backend
-$ mvn spring-boot:run # on terminal 1
-$ pnpm install -g http-server # on terminal 2
-$ cd {code-director}/backend/src/main/resources/static/images
-$ http-server
+$ mvn spring-boot:run 
 ```
 
+### Image service
+
+```sh
+$ cd {code-director}/profile-image-store
+$ pnpm install
+$ pnpm run dev
+```
 ### Frontend App
 
 ```sh
 $ cd {code-director}/frontend
+$ pnpm install
 $ pnpm run dev
 ```
 
