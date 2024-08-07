@@ -24,24 +24,6 @@ public class ConversationController {
     @Autowired
     private ProfileRepository profileRepository;
 
-    @PostMapping("/Conversations")
-    public Conversation createConversation(@RequestBody CreateConversationRequest request) {
-
-        profileRepository.findById(request.profileId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Unable to find a profile " + request.profileId()));
-
-        String id = UUID.randomUUID().toString();
-        Conversation conversation = new Conversation(
-                id,
-                request.profileId(),
-                new ArrayList<>());
-
-        conversationRepository.save(conversation);
-
-        return conversation;
-    }
 
     @PostMapping("/Conversations/{conversationId}")
     public Conversation addMessageToConversation(
@@ -51,14 +33,17 @@ public class ConversationController {
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Unable to find a conversation " + conversationId));
+                    STR."Unable to find a conversation \{conversationId}"));
 
         profileRepository.findById(message.authorId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Unable to find a profile " + message.authorId()));
+                    STR."Unable to find a profile \{message.authorId()}"));
 
-        // TODO: Validate if the authorId is intended recipeint of conversation.
+
+
+
+        // TODO: Validate if the authorId is intended recipient of conversation.
         ChatMessage chatMessage = new ChatMessage(
                 message.messageText(),
                 message.authorId(),
@@ -72,12 +57,11 @@ public class ConversationController {
 
     @GetMapping("/conversations/{conversationId}")
     public Conversation getConversation(@PathVariable String conversationId) {
-        Conversation conversation = conversationRepository.findById(conversationId)
+
+        return conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Unable to find a conversation " + conversationId));
-
-        return conversation;
+                    STR."Unable to find a conversation \{conversationId}"));
     }
 
 }

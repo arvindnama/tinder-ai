@@ -211,6 +211,8 @@ public class ProfileCreationService {
                     new FileReader(PROFILES_FILE_PATH),
                     new TypeToken<ArrayList<Profile>>() {
                     }.getType());
+
+            System.out.println(existingProfiles.get(0));
             profileRepository.deleteAll();
             profileRepository.saveAll(existingProfiles);
         } catch (FileNotFoundException e) {

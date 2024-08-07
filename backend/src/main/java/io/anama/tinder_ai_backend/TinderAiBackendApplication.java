@@ -19,6 +19,7 @@ import io.anama.tinder_ai_backend.profiles.ProfileRepository;
 @SpringBootApplication
 public class TinderAiBackendApplication implements CommandLineRunner {
 
+
     @Autowired
     private ProfileCreationService profileCreationService;
 
@@ -33,6 +34,7 @@ public class TinderAiBackendApplication implements CommandLineRunner {
     }
 
     public void run(String... args) {
+        profileCreationService.createProfiles(0);
         profileCreationService.saveProfilesToDB();
     }
 
