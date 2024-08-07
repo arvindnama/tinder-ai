@@ -1,7 +1,55 @@
 import { useState } from 'react';
 import './App.css'
-import { User, MessageCircle, X, Heart} from 'lucide-react'
+import { User, MessageCircle, X, Heart, Send} from 'lucide-react'
 
+
+const ChatView = () => {
+
+    const [input , setInput] = useState('');
+
+    const handleSend = () => {
+        if(!input.trim()) return;
+
+        console.log(input);
+        setInput('');
+    }
+    return (
+        <div className="rounded-lg shadow-lg p-4">
+            <h2 className="text-2x1 font-bold mb-4"> Chat with Foo bar</h2>
+            <div className="border rounded overflow-y-auto mb-4 p-2 h-[60vh]">
+            {[
+                "hi",
+                "how are you",
+                "how are you",
+                "how are you",
+                "how are you",
+                "how are you",
+                "how are you",
+                "how are you",
+                "how are you",
+            ].map((message, idx) => (
+                <div key={idx} className="mb-4 p-2 rounded bg-gray-100"> {message}</div>
+                )
+            )}
+            </div>
+
+            <div className="flex">
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    className="border flex-1 rounded p-2 mr-2"
+                    placeholder="Type a message ..."
+                ></input>
+                <button
+                    className="bg-blue-500 text-white rounded p-2"
+                    onClick={handleSend}
+                ><Send/></button>
+
+            </div>
+        </div>
+    );
+}
 
 const MatchesList = () => {
 
@@ -72,6 +120,7 @@ const ProfileSelector = () => {
 enum Screen {
     ProfileSelector,
     MatchesList,
+    Chat
 }
 function App() {
 
@@ -83,6 +132,8 @@ function App() {
             return <ProfileSelector/>
         case Screen.MatchesList:
             return <MatchesList/>
+        case Screen.Chat:
+            return <ChatView/>
     }
   }
   return (
