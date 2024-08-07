@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import static io.anama.tinder_ai_backend.Utils.generateMyersBriggsTypes;
 import static io.anama.tinder_ai_backend.Utils.selfieTypes;
-import static java.lang.StringTemplate.STR;
 
 @Service
 public class ProfileCreationService {

@@ -7,7 +7,9 @@ import io.anama.tinder_ai_backend.profiles.Profile;
 import io.anama.tinder_ai_backend.profiles.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +38,9 @@ public class MatchController {
             .orElseThrow(() ->
                 new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    STR."Profile Id not found \{createMatchRequest.profileId()}"
+                    STR."""
+                        Profile Id not found \{createMatchRequest.profileId()}
+                    """
                 )
             );
 
@@ -45,7 +49,9 @@ public class MatchController {
             // Conversation already exist for this match, do not create a new one.
             throw  new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                STR."You already have an conversation with the profile \{profile.id()}"
+                STR."""
+                  You already have an conversation with the profile \{profile.id()}
+                """
             );
         }
 
@@ -68,4 +74,9 @@ public class MatchController {
     public List<Match> getAllMatches() {
         return matchRepository.findAll();
     }
+
+    @DeleteMapping("/matches/{matchId}")
+        public void deleteConversation(@PathVariable String matchId) {
+                matchRepository.deleteById(matchId);
+        }
 }
