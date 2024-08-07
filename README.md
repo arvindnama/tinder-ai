@@ -43,7 +43,6 @@ $ cd {code-director}/frontend
 $ pnpm run dev
 ```
 
-
 ### Ports
 
 Ollama runs on 11434 (default)
@@ -51,7 +50,13 @@ http-server (image server) runs on 8081
 backend  (spring boot micro-service) runs on 8081
 frontend runs on 5173
 
+### TODO
+
+[] Profiles are pre-generated, try generating profiles on the fly using AI(Ollama)
+
 ### Screenshots
+
+Disclaimer :: Photos are AI generated, They are real humans.
 
 ![alt ProfileSelector](./Images/profile-selector.png)
 
