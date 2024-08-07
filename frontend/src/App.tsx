@@ -25,7 +25,21 @@ interface Profile {
     age: number
 }
 
-const getRandomProfile = async(): Promise<Profile> => {
+interface ProfileMatch {
+    id: string,
+    profile: Profile
+}
+
+
+const fetchMatches = async(): Promise<ProfileMatch[]> => {
+    const matches = await fetch("http://localhost:8080/matches");
+
+    if(!matches.ok) throw new Error("Unable to fetch profile")
+
+    return matches.json()
+}
+
+const fetchRandomProfile = async(): Promise<Profile> => {
     const profile = await fetch("http://localhost:8080/profiles/random");
 
     if(!profile.ok) throw new Error("Unable to fetch profile")
@@ -95,37 +109,63 @@ const ChatView = () => {
     );
 }
 
-const MatchesList = ({onSelect} : {onSelect: (matchId: string) => void}) => {
+const MatchesList = ({
+    profile,
+    onSelect
+    } : {
+        profile?: Profile,
+        onSelect: (matchId: string) => void
+    }
+) => {
+    const [matches, setMatches] = useState<ProfileMatch[]>()
+    const loadMatches = async () => {
+        try {
+            setMatches(await fetchMatches());
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    useEffect(() => {
+        loadMatches()
+    }, [])
+
 
     return (
-        <div className="rounded-lg overflow-hidden bg-white shadow-lg p-4">
-            <h2 className="text-2xl font-bold mb-4">Matches</h2>
-            <ul>
-                {[
-                    { id:"1", firstName:"Foo", lastName: "Bar", imageUrl:"http://127.0.0.1:8081/0c9655b1-f944-4869-b974-0e1aaf29757e.jpg"},
-                    { id:"2", firstName:"Abc", lastName: "Buzz", imageUrl:"http://127.0.0.1:8081/06fe0dc9-0915-4ede-9674-db77e54540e8.jpg"}
-                ].map((match) => {
-                    return (
-                        <li
-                            key={match.id}
-                            className="mb-2"
-                        >
-                            <button className="
-                                hover:bg-gray-100 w-full rounded flex item-center"
-                                onClick={() => onSelect(match.id)}
+        profile? (
+            <div className="rounded-lg overflow-hidden bg-white shadow-lg p-4">
+                <h2 className="text-2xl font-bold mb-4">Matches</h2>
+                <ul>
+                    {matches?.map((match) => {
+                        return (
+                            <li
+                                key={match.id}
+                                className="mb-2"
                             >
-                                <img className="w-16 h-16 rounded-full mr-3 object-cover"
-                                    src={match.imageUrl}
-                                />
-                                <span>
-                                    <h3 className="font-bold">{match.firstName} {match.lastName}</h3>
-                                </span>
-                            </button>
-                        </li>
-                    )
-                }) }
-            </ul>
-        </div>
+                                <button className="
+                                    hover:bg-gray-100 w-full rounded flex item-center"
+                                    onClick={() => onSelect(match.id)}
+                                >
+                                    <img
+                                        className="w-16 h-16 rounded-full mr-3 object-cover"
+                                        src={
+                                            `http://localhost:8081/${match.profile.imageUrl}`}
+                                    />
+                                    <span>
+                                        <h3 className="font-bold"
+                                        >
+                                            {match.profile.firstName} {match.profile.lastName}
+                                        </h3>
+
+                                    </span>
+                                </button>
+                            </li>
+                        )
+                    }) }
+                </ul>
+            </div>
+        ): <div>Loding....</div>
+
     );
 }
 
@@ -183,7 +223,7 @@ function App() {
 
   const loadRandomProfile = async () => {
     try{
-        const profile  = await getRandomProfile();
+        const profile  = await fetchRandomProfile();
         setCurrentProfile(profile)
     }catch(e){
         console.error(e)
@@ -207,7 +247,10 @@ function App() {
                 onSwipe={handleSwipe}
             />
         case Screen.MatchesList:
-            return <MatchesList onSelect={ () => setCurrentScreen(Screen.Chat)} />
+            return <MatchesList
+                profile={currentProfile}
+                onSelect={ () => setCurrentScreen(Screen.Chat)}
+            />
         case Screen.Chat:
             return <ChatView/>
     }
