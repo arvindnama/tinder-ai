@@ -1,12 +1,14 @@
 package io.anama.tinder_ai_backend.matches;
 
 
+import static java.lang.StringTemplate.STR;
 import io.anama.tinder_ai_backend.conversations.Conversation;
 import io.anama.tinder_ai_backend.conversations.ConversationRepository;
 import io.anama.tinder_ai_backend.profiles.Profile;
 import io.anama.tinder_ai_backend.profiles.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +35,7 @@ public class MatchController {
     private ConversationRepository conversationRepository;
 
     @PostMapping("/matches")
+    @CrossOrigin(origins = "*")
     public Match createMatch(@RequestBody CreateMatchRequest createMatchRequest) {
         Profile profile = profileRepository.findById(createMatchRequest.profileId())
             .orElseThrow(() ->
@@ -71,12 +74,14 @@ public class MatchController {
     }
 
     @GetMapping("/matches")
+    @CrossOrigin(origins = "*")
     public List<Match> getAllMatches() {
         return matchRepository.findAll();
     }
 
     @DeleteMapping("/matches/{matchId}")
-        public void deleteConversation(@PathVariable String matchId) {
-                matchRepository.deleteById(matchId);
-        }
+    @CrossOrigin(origins = "*")
+    public void deleteConversation(@PathVariable String matchId) {
+            matchRepository.deleteById(matchId);
+    }
 }

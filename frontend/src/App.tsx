@@ -1,6 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css'
 import { User, MessageCircle, X, Heart, Send} from 'lucide-react'
+
+enum Screen {
+    ProfileSelector,
+    MatchesList,
+    Chat
+}
+
+enum SwipeDirection {
+    Left,
+    Right
+}
+
+interface Profile {
+    id: string,
+    firstName: string,
+    lastName: string,
+    bio: string,
+    imageUrl: string,
+    ethnicity: string,
+    myersBriggsPersonalityType: string,
+    gender: string,
+    age: number
+}
+
+const getRandomProfile = async(): Promise<Profile> => {
+    const profile = await fetch("http://localhost:8080/profiles/random");
+
+    if(!profile.ok) throw new Error("Unable to fetch profile")
+
+    return profile.json()
+}
+
 
 
 const ChatView = () => {
@@ -85,55 +117,78 @@ const MatchesList = ({onSelect} : {onSelect: (matchId: string) => void}) => {
     );
 }
 
-const ProfileSelector = () => {
+const ProfileSelector = ({profile, onSwipe}: {
+        profile?: Profile,
+        onSwipe: (direction: SwipeDirection) => void
+    }
+) => {
 
     return(
-        <div className="rounded-lg overflow-hidden bg-white shadow-lg">
-            <div className="relative">
-                <img src= "http://127.0.0.1:8081/0c9655b1-f944-4869-b974-0e1aaf29757e.jpg"/>
-                <div className="
-                    absolute
-                    bottom-0 left-0 right-0 text-white p-4
-                    bg-gradient-to-t from-black"
-                >
-                    <h2 className="text-2x1 font-bold">Foo Bar, 30</h2>
+        profile ?
+        (
+            <div className="rounded-lg overflow-hidden bg-white shadow-lg">
+                <div className="relative">
+                    <img src= {`http://127.0.0.1:8081/${profile.imageUrl}`}/>
+                    <div className="
+                        absolute
+                        bottom-0 left-0 right-0 text-white p-4
+                        bg-gradient-to-t from-black"
+                    >
+                        <h2 className="text-2x1 font-bold">{profile.firstName} {profile.lastName}, {profile.age}</h2>
+                    </div>
+                </div>
+                <div className="p-4">
+                    <p className="text-gray-600 mb-4"> {profile.bio}</p>
+                </div>
+                <div className="p-4 flex justify-center space-x-4">
+                    <button className="
+                        bg-red-500 rounded-full p-4 text-white hover:bg-red-700"
+                        onClick={() => onSwipe(SwipeDirection.Left)}
+                    >
+                        <X size={24}/>
+                    </button>
+                    <button className="
+                        bg-green-500 rounded-full p-4 text-white hover:bg-green-700"
+                        onClick={() => onSwipe(SwipeDirection.Right)}
+                    >
+                        <Heart size={24}/>
+                    </button>
                 </div>
             </div>
-            <div className="p-4">
-                <p className="text-gray-600 mb-4"> adadad adadada ada</p>
-            </div>
-            <div className="p-4 flex justify-center space-x-4">
-                <button className="
-                    bg-red-500 rounded-full p-4 text-white hover:bg-red-700"
-                    onClick={() => console.log('Swipe left')}
-                >
-                    <X size={24}/>
-                </button>
-                <button className="
-                    bg-green-500 rounded-full p-4 text-white hover:bg-green-700"
-                    onClick={() => console.log('Swipe right')}
-                >
-                    <Heart size={24}/>
-                </button>
-            </div>
-        </div>
+        )
+        :
+        <div>Loading...</div>
     )
 }
 
-enum Screen {
-    ProfileSelector,
-    MatchesList,
-    Chat
-}
+
 
 function App() {
 
   const [currentScreen, setCurrentScreen] = useState(Screen.ProfileSelector);
 
+  const [currentProfile, setCurrentProfile] = useState<Profile>();
+
+  const loadRandomProfile = async () => {
+    try{
+        const profile  = await getRandomProfile();
+        setCurrentProfile(profile)
+    }catch(e){
+        console.error(e)
+    }
+  }
+
+    useEffect(() => {
+        loadRandomProfile()
+    }, []);
+
   const renderScreen = () => {
     switch (currentScreen) {
         case Screen.ProfileSelector:
-            return <ProfileSelector/>
+            return <ProfileSelector
+                profile={currentProfile}
+                onSwipe={() => loadRandomProfile()}
+            />
         case Screen.MatchesList:
             return <MatchesList onSelect={ () => setCurrentScreen(Screen.Chat)} />
         case Screen.Chat:

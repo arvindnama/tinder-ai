@@ -2,6 +2,7 @@ package io.anama.tinder_ai_backend.conversations;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import static java.lang.StringTemplate.STR;
 import io.anama.tinder_ai_backend.profiles.Profile;
 import io.anama.tinder_ai_backend.profiles.ProfileRepository;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -27,6 +29,7 @@ public class ConversationController {
 
 
         @PostMapping("/conversations/{conversationId}")
+        @CrossOrigin(origins = "*")
         public Conversation addMessageToConversation(@PathVariable String conversationId,
                         @RequestBody ChatMessage message) {
 
@@ -67,6 +70,7 @@ public class ConversationController {
         }
 
         @GetMapping("/conversations/{conversationId}")
+        @CrossOrigin(origins = "*")
         public Conversation getConversation(@PathVariable String conversationId) {
 
                 return conversationRepository.findById(conversationId)
@@ -80,6 +84,7 @@ public class ConversationController {
         }
 
         @DeleteMapping("/conversations/{conversationId}")
+        @CrossOrigin(origins = "*")
         public void deleteConversation(@PathVariable String conversationId) {
                 conversationRepository.deleteById(conversationId);
         }
