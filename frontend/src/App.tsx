@@ -33,6 +33,18 @@ const getRandomProfile = async(): Promise<Profile> => {
     return profile.json()
 }
 
+const saveMatch = async(profileId: string) : Promise<void>  => {
+    const resp = await fetch("http://localhost:8080/matches", {
+        headers: {
+            "Content-Type":"application/json"
+        },
+        method: 'POST',
+        body: JSON.stringify({profileId})
+    })
+
+    if(!resp.ok) throw new Error("Unable to fetch profile")
+}
+
 
 
 const ChatView = () => {
@@ -119,7 +131,7 @@ const MatchesList = ({onSelect} : {onSelect: (matchId: string) => void}) => {
 
 const ProfileSelector = ({profile, onSwipe}: {
         profile?: Profile,
-        onSwipe: (direction: SwipeDirection) => void
+        onSwipe: (profile: Profile, direction: SwipeDirection) => void
     }
 ) => {
 
@@ -143,13 +155,13 @@ const ProfileSelector = ({profile, onSwipe}: {
                 <div className="p-4 flex justify-center space-x-4">
                     <button className="
                         bg-red-500 rounded-full p-4 text-white hover:bg-red-700"
-                        onClick={() => onSwipe(SwipeDirection.Left)}
+                        onClick={() => onSwipe(profile, SwipeDirection.Left)}
                     >
                         <X size={24}/>
                     </button>
                     <button className="
                         bg-green-500 rounded-full p-4 text-white hover:bg-green-700"
-                        onClick={() => onSwipe(SwipeDirection.Right)}
+                        onClick={() => onSwipe(profile, SwipeDirection.Right)}
                     >
                         <Heart size={24}/>
                     </button>
@@ -178,6 +190,11 @@ function App() {
     }
   }
 
+  const handleSwipe  = async (profile: Profile, direction: SwipeDirection) => {
+    if(direction === SwipeDirection.Right) await saveMatch(profile.id);
+    await loadRandomProfile()
+  }
+
     useEffect(() => {
         loadRandomProfile()
     }, []);
@@ -187,7 +204,7 @@ function App() {
         case Screen.ProfileSelector:
             return <ProfileSelector
                 profile={currentProfile}
-                onSwipe={() => loadRandomProfile()}
+                onSwipe={handleSwipe}
             />
         case Screen.MatchesList:
             return <MatchesList onSelect={ () => setCurrentScreen(Screen.Chat)} />
